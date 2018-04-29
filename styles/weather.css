@@ -1,0 +1,82 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,100,300,700,900);
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+.container {
+    background: #11998e;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #38ef7d, #11998e); 
+    color: #eee;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.weather-wrapper {
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+}
+
+.input-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+input {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: white;
+}
+
+input:hover, input:focus {
+    border: none;
+    outline: none;
+}
+
+
+#weather {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 5px;
+}
+
+
+div.icon {
+    width: 200px;
+    height: 100px;
+    margin-top: 15px;
+}
+
+#desc {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.weather-parameter {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 18px;
+}
+
+
+
