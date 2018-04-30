@@ -1,5 +1,5 @@
 const API_KEY = 'd55bde6aa4d19b26745efd55ed9ad8b6';
-const URL = `http://api.openweathermap.org/data/2.5`;
+const URL = `https://api.openweathermap.org/data/2.5`;
 
 export function getWeatherData (city) {
     const dailyWeatherURL = `${URL}/weather?q=${city}&appid=${API_KEY}`;
