@@ -1,46 +1,53 @@
 import React from 'react';
-import Skycons from 'react-skycons';
+import CurrentWeatherItem from './CurrentWeatherItem';
 
-import { getWeatherData, getWeatherIcon } from '../utils/WeatherAPI';
+import { getTodayWeatherData, getWeeklyWeatherData, getWeatherIcon } from '../utils/WeatherAPI';
 
 export default class Weather extends React.Component {
 
     constructor() {
         super();
-        this.timeout = null;
-        this.state = {
+
+        this.state = {            
+            currentWeather: {
+                currentTemperature: '',
+                currentPressure: '',
+                currentWeatherDescription: '',
+                currentWeatherIcon: '',
+                currentClouds: ''
+            }
         };
+
+        this.timeout = null;
 
         this.setWeatherData("Rzeszów");
     }
 
-    doIt(value) {
+    setWeatherWithDelay(value) {
         clearTimeout(this.timeout);
 
         this.timeout = setTimeout(() => {
             this.setWeatherData(value);
         }, 1000);
-
     }
 
-
-
     handleInput(e) {
-        this.doIt(e.target.value);
+        this.setWeatherWithDelay(e.target.value);
     }
 
     setWeatherData(city) {
 
-        getWeatherData(city)
+        getTodayWeatherData(city)
             .then((data) => {
-                console.log(data);
                 if (!(data.cod === "404" || data.message === "city not found" || data.message === "Nothing to geocode")) {
                     this.setState({
-                        temp: (Number(data.main.temp - 273.15).toFixed(1)) + '°C',
-                        pressure: "Pressure: " + data.main.pressure + " hPa",
-                        clouds: "Clouds: " + data.clouds.all + '%',
-                        description: data.weather[0].description,
-                        icon: data.weather[0].id
+                        currentWeather: {
+                            currentTemperature: 'Temperature: ' + (Number(data.main.temp - 273.15).toFixed(1)) + ' °C',
+                            currentPressure: 'Pressure: ' + data.main.pressure + ' hPa',
+                            currentWeatherDescription: data.weather[0].description,
+                            currentWeatherIcon: data.weather[0].id,
+                            currentClouds: 'Clouds: ' + data.clouds.all + '%'
+                        }
                     });
                 }
             });
@@ -48,19 +55,14 @@ export default class Weather extends React.Component {
     }
 
     render() {
+        console.log(this.state.currentWeather);
         return (
             <div className="weather-wrapper">
                 <div className="input-wrapper">
                     <input id="cityInput" type="text" defaultValue="Rzeszów" onChange={this.handleInput.bind(this)} />
                 </div>
-                <div id="weather" className="weather">
-                    <div className="icon">
-                        <Skycons color="white" icon={getWeatherIcon(this.state.icon)} />
-                    </div>
-                    <div id="desc" className="weather-parameter">{this.state.description}</div>
-                    <div id="temp" className="weather-parameter">{this.state.temp}</div>
-                    <div id="clouds" className="weather-parameter">{this.state.clouds}</div>
-                    <div id="pressure" className="weather-parameter">{this.state.pressure}</div>
+                <div className="current-weather">
+                    <CurrentWeatherItem weather={this.state.currentWeather} />
                 </div>
 
             </div>

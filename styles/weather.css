@@ -52,7 +52,7 @@ input:hover, input:focus {
 }
 
 
-#weather {
+.current-weather-item {
     display: flex;
     justify-content: center;
     align-items: center;

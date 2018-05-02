@@ -1,13 +1,22 @@
 const API_KEY = 'd55bde6aa4d19b26745efd55ed9ad8b6';
 const URL = `https://api.openweathermap.org/data/2.5`;
 
-export function getWeatherData (city) {
+export function getTodayWeatherData (city) {
     const dailyWeatherURL = `${URL}/weather?q=${city}&appid=${API_KEY}`;
 
     return fetch(dailyWeatherURL).then(response => response.json())
     .catch((err) => {
         console.log(err);
     });
+}
+
+export function getWeeklyWeatherData (city) {
+  const dailyWeatherURL = `${URL}/forecast?q=${city}&appid=${API_KEY}`;
+
+  return fetch(dailyWeatherURL).then(response => response.json())
+  .catch((err) => {
+      console.log(err);
+  });
 }
 
 export function getWeatherIcon (id) {
