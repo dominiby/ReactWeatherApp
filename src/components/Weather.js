@@ -44,7 +44,7 @@ export default class Weather extends React.Component {
         return {
             temperature: 'Temperature: ' + (Number(weatherItem.main.temp - 273.15).toFixed(1)) + ' °C',
             pressure: 'Pressure: ' + weatherItem.main.pressure + ' hPa',
-            weatherDescription: weatherItem.weather.description,
+            weatherDescription: weatherItem.weather[0].description,
             weatherIcon: weatherItem.weather[0].id,
             clouds: 'Clouds: ' + weatherItem.clouds.all + '%',
             date: weatherItem.dt_txt
