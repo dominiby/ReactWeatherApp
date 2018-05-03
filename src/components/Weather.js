@@ -1,5 +1,5 @@
 import React from 'react';
-import CurrentWeatherItem from './CurrentWeatherItem';
+import WeatherItem from './WeatherItem';
 
 import { getTodayWeatherData, getWeeklyWeatherData, getWeatherIcon } from '../utils/WeatherAPI';
 
@@ -10,12 +10,13 @@ export default class Weather extends React.Component {
 
         this.state = {            
             currentWeather: {
-                currentTemperature: '',
-                currentPressure: '',
-                currentWeatherDescription: '',
-                currentWeatherIcon: '',
-                currentClouds: ''
-            }
+                temperature: '',
+                pressure: '',
+                weatherDescription: '',
+                weatherIcon: '',
+                clouds: ''
+            },
+            weekWeather: []
         };
 
         this.timeout = null;
@@ -35,6 +36,21 @@ export default class Weather extends React.Component {
         this.setWeatherWithDelay(e.target.value);
     }
 
+    is12AM (weeklyWeatherListItem) {
+        return weeklyWeatherListItem.dt_txt.indexOf('12:00:00') !== -1;
+    }
+
+    convert (weatherItem) {
+        return {
+            temperature: 'Temperature: ' + (Number(weatherItem.main.temp - 273.15).toFixed(1)) + ' °C',
+            pressure: 'Pressure: ' + weatherItem.main.pressure + ' hPa',
+            weatherDescription: weatherItem.weather.description,
+            weatherIcon: weatherItem.weather[0].id,
+            clouds: 'Clouds: ' + weatherItem.clouds.all + '%',
+            date: weatherItem.dt_txt
+        }
+    }
+
     setWeatherData(city) {
 
         getTodayWeatherData(city)
@@ -42,12 +58,25 @@ export default class Weather extends React.Component {
                 if (!(data.cod === "404" || data.message === "city not found" || data.message === "Nothing to geocode")) {
                     this.setState({
                         currentWeather: {
-                            currentTemperature: 'Temperature: ' + (Number(data.main.temp - 273.15).toFixed(1)) + ' °C',
-                            currentPressure: 'Pressure: ' + data.main.pressure + ' hPa',
-                            currentWeatherDescription: data.weather[0].description,
-                            currentWeatherIcon: data.weather[0].id,
-                            currentClouds: 'Clouds: ' + data.clouds.all + '%'
+                            temperature: 'Temperature: ' + (Number(data.main.temp - 273.15).toFixed(1)) + ' °C',
+                            pressure: 'Pressure: ' + data.main.pressure + ' hPa',
+                            weatherDescription: data.weather[0].description,
+                            weatherIcon: data.weather[0].id,
+                            clouds: 'Clouds: ' + data.clouds.all + '%'
                         }
+                    });
+                }
+            });
+
+        getWeeklyWeatherData(city)
+            .then((data) => {
+                if (!(data.cod === "404" || data.message === "city not found" || data.message === "Nothing to geocode")) {
+                    var weatherDataList = data.list;
+                    weatherDataList = weatherDataList.filter(this.is12AM);
+                    console.log(weatherDataList);
+                    weatherDataList = weatherDataList.map(this.convert);
+                    this.setState({
+                        weekWeather: weatherDataList
                     });
                 }
             });
@@ -55,14 +84,20 @@ export default class Weather extends React.Component {
     }
 
     render() {
-        console.log(this.state.currentWeather);
         return (
             <div className="weather-wrapper">
                 <div className="input-wrapper">
                     <input id="cityInput" type="text" defaultValue="Rzeszów" onChange={this.handleInput.bind(this)} />
                 </div>
                 <div className="current-weather">
-                    <CurrentWeatherItem weather={this.state.currentWeather} />
+                    <WeatherItem weather={this.state.currentWeather} />
+                </div>
+                <div className="week-weather">
+                    {this.state.weekWeather.map((weatherData, i) => {
+                        return <div key={i} className="week-item">
+                            <WeatherItem weather={weatherData} />
+                        </div>
+                    })}
                 </div>
 
             </div>
